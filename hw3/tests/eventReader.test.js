@@ -1,4 +1,11 @@
 /** @jest-environment jsdom */
+
+/* 
+ * CS 341: Homework 3
+ * Purpose: Second unit test file. Checks for file name and expected content
+ * File type: .test.js file
+ * Author: Sean Yang
+*/
 var fs = require('fs');
 test('test selectEvent', () => {
 //Read the index.html file into a string
