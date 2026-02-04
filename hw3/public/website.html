@@ -1,0 +1,156 @@
+<!--
+ * CS 341: Homework 2
+ * Purpose: Creates an updated HTML webpage that has additional JavaScript code added. 
+ * File type: .html file
+ * Author: Sean Yang
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cheesecake Order Form</title>
+  <link rel="stylesheet" href="style.css">
+  <script
+src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"/>
+</script>
+</head>
+
+<body style="font-family: Times New Roman, serif;">
+
+  <!-- Title -->
+  <h1> Cheesecake Order Form </h1>
+
+  <!-- Link to image (had to use a reverse image search to find this)-->
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Mondays_at_Il_Forno_-_Cheesecake_with_strawberry_sauce.jpg/2560px-Mondays_at_Il_Forno_-_Cheesecake_with_strawberry_sauce.jpg" width="300">
+  <br><br>
+
+    <!-- Table containing dropdown box and radio buttons-->
+  <table id="orderTable">
+    <tr>
+      <!-- Two columns for quantity and topping -->
+      <td>Quantity</td>
+      <td>Topping</td>
+    </tr>
+    <!-- Drop-down box with up to 10 options -->
+    <tr>
+      <td>
+        <select id="quantity">
+          <option>1</option>
+          <option>2</option>
+          <option selected>3</option>
+          <option>4</option>
+          <option>5</option>
+          <option>6</option>
+          <option>7</option>
+          <option>8</option>
+          <option>9</option>
+          <option>10</option>
+        </select>
+      </td>
+    <!-- A column on the right with 3 radio buttons-->
+      <td>
+        <input type="radio" id="plainTopping" name="toppingOption" value="plain"> Plain <br>
+        <input type="radio" id="cherryTopping" name="toppingOption" value="cherry"> Cherry <br>
+        <input type="radio" id="chocolateTopping" name="toppingOption" value="chocolate"> Chocolate
+      </td>
+    </tr>
+  </table>
+
+  <br>
+  
+  <!-- This text originally displays notes, but after ordering it will be reused and replaced with the order details -->
+  <p id="notesTitle">Notes:</p>
+  <!-- A basic text area for the order with a placeholder text -->
+  <textarea id="orderNotes" rows="7" cols="50" placeholder="Enter any special instructions here..."></textarea>
+
+  <br><br>
+
+  <!-- Order button -->
+  <button style="padding: 5px 15px;" id="orderButton">Order</button>
+  <script>
+    $(document).ready(function(){
+      //Catches any orders
+      $("#orderButton").click(function(){
+        //Helper variables that store values of data collected from the site
+        var orderNotes = $("#orderNotes").val();
+        var toppingOption = $("input[name='toppingOption']:checked").val();
+        var toppingSelected = $("input[name='toppingOption']:checked");
+
+        //Requires a topping selection for all orders before it can be registered. Prevents errors where the topping order is undefined
+        if(!toppingSelected.length){
+          alert("You have not selected a topping option!");
+          return;
+        }
+        
+        //If order contains any form of the word vegan, warn the user that the order contains dairy (I'm not sure what they were expecting as they are ordering cheesecake)
+        if(orderNotes.includes("vegan") || orderNotes.includes("Vegan")){
+          alert("The order you submitted contains dairy!");
+        } else {
+          //Otherwise, hides everything and changes the text thanking the customer for their order
+          $("#orderNotes").hide();
+          $("#orderTable").hide();
+          $("#orderButton").hide();
+          var toppingOption = $("input[name='toppingOption']:checked").val();
+          //Prints a message informing the user of their order information
+          $("#notesTitle").html("Thank you! Your order has been placed! Your cheesecake has " + toppingOption + " topping. You have ordered " + $("#quantity").val() + 
+          " cheesecake(s). You have the following notes: " + orderNotes);
+          alert("Order submitted successfully!");
+        }
+      });
+    });
+  </script>
+
+  <br><br>
+
+<!-- Modifies the title so the month is actually a drop-down -->
+<!-- This dropdown format was taken from W3 schools https://www.w3schools.com/howto/howto_css_dropdown.asp with minor modifications -->
+<div class="monthlyOrders">
+  <h2 id="monthSelector">Orders for</h2>
+  <div class="dropdown">
+    <button id="dropbtn" class="dropbtn" type="button">Jan</button>
+    <div class="dropdown-content">
+      <a>Jan</a>
+      <a>Feb</a>
+      <a>Mar</a>
+      <a>Apr</a>
+      <a>May</a>
+      <a>Jun</a>
+      <a>Jul</a>
+      <a>Aug</a>
+      <a>Sep</a>
+      <a>Oct</a>
+      <a>Nov</a>
+      <a>Dec</a>
+    </div>
+  </div>
+</div>
+
+<script>
+    $(document).ready(function(){
+      //When a month is selected from the drop-down, change the month accordingly 
+      $(".dropdown-content a").click(function(){
+        var selectedMonth = $(this).text();
+        $("#dropbtn").text(selectedMonth);
+      });
+    });
+  </script>
+
+<!-- Order details -->
+  <ul>
+    <li>11 cherry</li>
+    <li>17 chocolate</li>
+    <li>31 plain</li>
+  </ul>
+  
+  <!-- Pads the bottom image  -->
+  <br><br>
+  <br><br>
+  <br><br>
+  <br><br>
+  <br><br>
+  <br><br>
+  <br><br>
+  <br><br>
+  <br><br>
+
+</body>
+</html>
