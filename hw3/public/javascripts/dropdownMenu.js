@@ -17,9 +17,14 @@
         //Sends a post to the server with the info 
         $.post("/orders", { monthText: monthText }, function(data) {
             console.log(data);
-            //Redirects to the orders page with the json information
-            window.location.href = "/orders";
+            //Clears the current list 
+            $("#orderDetails").html("");
+
+            data.data.forEach(function(order) {
+                $("#orderDetails").append( "<li>" + order.quantity + " " + order.topping);
+            });
         });
+
 
 
     });
