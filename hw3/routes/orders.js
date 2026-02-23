@@ -39,17 +39,24 @@ router.post('/', async function(req, res) {
     const monthInt = monthToInt[selectedMonth];
     console.log("Post received:", selectedMonth);
 
+    //Due to wifi issues a try catch is necessary to prevent server timeout error
+    //We can just tell the consumer to blame Cloudflare (ignore the fact this is running on localhost)
+    try {
+    //Grabs toppings and order info from database
     const toppings = await bigData.dbquery(`SELECT * FROM toppings`);
+    const orders = await bigData.dbquery(`SELECT * FROM orders WHERE month = ${monthInt} AND year = 2023 ORDER BY o_id ASC`);
 
     res.json({
-
         title: 'Orders for ' + selectedMonth,
         data: [
-            {"topping":toppings[0].topping, "quantity":2},
-            {"topping":toppings[1].topping, "quantity":6},
-            {"topping":toppings[2].topping, "quantity":3}
+            {"topping":toppings[0].name, "quantity":orders[0].quantity},
+            {"topping":toppings[1].name, "quantity":orders[1].quantity},
+            {"topping":toppings[2].name, "quantity":orders[2].quantity}
         ]
     });
+    } catch (error) {
+        console.error("Badness occurred blame Cloudflare", error);
+    }
 });
 module.exports = router;
 
