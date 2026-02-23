@@ -17,49 +17,34 @@ router.get("/", function (req, res, next) {
   });
 });
 
-//Processes a POST request. If you receive a post it should update the order info by retrieving the corresponding month from the database
+//Processes a POST request and sends data to the database.
 router.post("/", async function (req, res) {
-  //Selected month grabs the abbreviated month from dropdown menu. Afterwards it is converted to an int for use with the database
-  const selectedMonth = req.body.monthText;
-  const monthToInt = {
-    jan: 1,
-    feb: 2,
-    mar: 3,
-    apr: 4,
-    may: 5,
-    jun: 6,
-    jul: 7,
-    aug: 8,
-    sep: 9,
-    oct: 10,
-    nov: 11,
-    dec: 12,
-  };
-  const monthInt = monthToInt[selectedMonth];
-  console.log("Post received:", selectedMonth);
+
+  const orderInfo = req.body;
+  const quantity = orderInfo.quantity;
+  const topping = orderInfo.topping;
+  const notes = orderInfo.notes;
+
+  console.log("Post received:", orderInfo);
 
   //Due to wifi issues a try catch is necessary to prevent server timeout error (if you are not on school wifi the database inquiry will not work)
   //If that happens we can just blame it on Cloudflare or AWS (ignore the fact this is running on localhost)
   try {
-    //Grabs toppings and order info from database. This should join everything into one big data entry if successful
-    const orderData = await bigData.dbquery(
-      `SELECT t.name, o.quantity FROM orders o INNER JOIN toppings t ON o.t_id = t.t_id WHERE o.month = ${monthInt} AND o.year = 2023 ORDER BY o.o_id ASC`,
-    );
+    //Uses submitted topping to find the correct t_id
+    const toppingType = await bigData.dbquery(
+      `SELECT t_id FROM toppings WHERE name = '${topping}'`,);
+      const toppingId = toppingType[0].t_id;
 
-    //For loop that grabs all topping and order data from the specified month
-    //If no data exists it displays an empty table
-    const allOrders = [];
-    for (let i = 0; i < orderData.length; i++) {
-      allOrders.push({
-        topping: orderData[i].name,
-        quantity: orderData[i].quantity,
-      });
-    }
+    //Inserts new order into database. Month is hard coded as July, year is 2023. May change the hard coding if needed
+    await bigData.dbquery(
+      `INSERT INTO orders (t_id, quantity, month, year, notes) VALUES (${toppingId}, ${quantity}, 7, 2023, '${notes}')`,);
 
-    //Sends back the order detail. Empty if no orders exist
+    //Returns data. This doesn't actually do anything for now, it's just here as a stub
+    const data = [ { topping: topping, quantity: quantity, notes: notes } ];
+    console.log("Data was sent:", data);
     res.json({
-      title: "Orders for " + selectedMonth,
-      data: allOrders,
+      title: "Order data for July 2023",
+      data: data,
     });
   } catch (error) {
     console.error("Badness occurred blame Cloudflare", error);

@@ -23,6 +23,13 @@ $(document).ready(function () {
       orderSummary();
       alert("Order submitted successfully!");
     }
+
+    //Sends a post to the server with order info. A neworder page was created to handle this process
+    $.post("/neworder", {
+      topping: $("input[name='toppingOption']:checked").val(),
+      quantity: $("#quantity").val(),
+      notes: $("#orderNotes").val(),
+    });
   });
 
   //Helper function that checks if order contains any form of the word vegan
@@ -64,7 +71,4 @@ $(document).ready(function () {
         orderNotes,
     );
   }
-    $.post("/orders", { monthText: monthText }, function (data) {
-      console.log(data);
-    
 });
